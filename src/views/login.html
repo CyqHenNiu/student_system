@@ -61,6 +61,10 @@
             // 要再次请求服务器必须让之前的src跟修改后的不同
             this.src = '/account/vcode?random=' + Math.random();
         })
+        // 点击注册去注册页
+        function register() {
+            window.location.href = '/account/register';
+        }
     </script>
 </body>
 

@@ -15,5 +15,10 @@ accountRouter.get('/login', accountCTRL.getLoginPage);
 // 请求图片验证码
 accountRouter.get('/vcode', accountCTRL.getImgVcode);
 
+// 请求注册页面
+accountRouter.get('/register', accountCTRL.getRegisterPage);
+
+// 注册用户
+accountRouter.post('/register',accountCTRL.register);
 // 导出路由
 module.exports = accountRouter;
