@@ -2,7 +2,9 @@
 const express = require('express');
 const path = require('path');
 // 导入body-parser
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+// 导入express-session
+const session = require('express-session');
 
 // 创建app
 const app = express();
@@ -17,6 +19,16 @@ app.use(bodyParser.urlencoded({
 
 // 引用获取json格式的中间件
 app.use(bodyParser.json());
+
+// 引用设置session中间件
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 100000
+    }
+}))
 
 // 集成路由中间件
 // 引入路由

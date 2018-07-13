@@ -18,8 +18,8 @@ exports.getLoginPage = (req, res) => {
 exports.getImgVcode = (req, res) => {
     // 生成随机验证码
     var code = parseInt(Math.random() * 9000 + 1000);
-    // 保存验证码
-    // req.session.checkcode = code;
+    // 保存验证码到session
+    req.session.vcode = code;
     var p = new captchapng(80, 30, code);
     // 背景颜色
     p.color(0, 0, 0, 0);
@@ -49,7 +49,7 @@ exports.register = (req, res) => {
         userName
     } = req.body;
     // 定义返回结果 0为注册成功  1为用户名已存在  2为注册失败
-    let result = {
+    const result = {
         status: 0,
         message: '注册成功'
     };
@@ -59,7 +59,7 @@ exports.register = (req, res) => {
     }, function (err, client) {
         const db = client.db(dbName);
         // 需要查询的文档
-        const collection = db.collection('studentsInfo');
+        const collection = db.collection('userInfo');
         // 查询用户名
         collection.findOne({
             userName
@@ -80,21 +80,62 @@ exports.register = (req, res) => {
                         // 注册失败  修改返回结果
                         result.status = 2;
                         result.message = '注册失败';
-                        // 关闭数据库连接
-                        client.close();
-                        // 返回结果
-                        res.json(result)
-                    } else {
-                        // 注册成功
-                        // 关闭数据库连接
-                        client.close();
-                        // 返回结果
-                        res.json(result)
                     }
+                    // 关闭数据库连接
+                    client.close();
+                    // 返回结果
+                    res.json(result)
                 });
             }
         });
 
 
     });
+}
+
+// 导出用户登录验证方法
+exports.login = (req, res) => {
+    // 返回的登录信息  0为成功登录  1为验证码错误  2为账号或密码错误
+    const result = {
+        status: 0,
+        message: '登录成功'
+    }
+    // 接收数据
+    const {
+        userName,
+        password,
+        vcode
+    } = req.body;
+    // 判断验证码是否正确
+    if (vcode != req.session.vcode) {
+        result.status = 1;
+        result.message = '验证码错误';
+        // 返回结果
+        res.json(result);
+        return
+    }
+
+    // 连接数据库
+    MongoClient.connect(url, {
+        useNewUrlParser: true
+    }, function (err, client) {
+        const db = client.db(dbName);
+        // 需要查询的文档
+        const collection = db.collection('userInfo');
+        // 查询用户名
+        collection.findOne({
+            userName,
+            password
+        }, function (err, docs) {
+            if (docs == null) {
+                // 没查找到数据
+                result.status = 2;
+                result.message = '账号或密码错误';
+            }
+            // 关闭数据库连接
+            client.close();
+            // 返回结果
+            res.json(result);
+        })
+    })
 }

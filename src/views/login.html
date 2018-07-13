@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <!-- 请求jQuery必须从静态资源根目录获取 -->
     <script src="/js/jquery.min.js"></script>
+    <!-- 请求服务器静态资源的md5文件 -->
+    <script type="text/javascript" src="/js/md5.js"></script>
     <title>登录页面</title>
 </head>
 
@@ -64,6 +66,24 @@
         // 点击注册去注册页
         function register() {
             window.location.href = '/account/register';
+        }
+        // 登录
+        function login() {
+            // 获取用户名密码
+            const userName = $('#usernameId').val();
+            // 密码进行md5加密  加盐
+            const password = $.md5($('#passwordId').val() + '!@#aA');
+            // 获取验证码
+            const vcode = $('#vcodeId').val();
+
+            // 发送post请求
+            $.post('/account/login', {
+                userName,
+                password,
+                vcode
+            }, function (backData) {
+               
+            })
         }
     </script>
 </body>
