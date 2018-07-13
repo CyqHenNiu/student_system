@@ -82,7 +82,15 @@
                 password,
                 vcode
             }, function (backData) {
-               
+                // 登录失败提示信息
+                if (backData.status != 0) {
+                    alert(backData.message);
+                    // 刷新验证码
+                    $('#vcodeimg').attr('src', '/account/vcode?random=' + Math.random());
+                } else {
+                    // 登录成功跳转页面
+                    window.location.href = '/studentManager/list';
+                }
             })
         }
     </script>

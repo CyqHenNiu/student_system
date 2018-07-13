@@ -34,7 +34,12 @@ app.use(session({
 // 引入路由
 const accountRouter = require(path.join(__dirname, 'routers/accountRouter.js'));
 // 如果请求是以account 交给它的路由处理
-app.use('/account', accountRouter)
+app.use('/account', accountRouter);
+
+// 引入学生管理路由
+const studentManagerRouter = require(path.join(__dirname, 'routers/studentManagerRouter.js'));
+// 处理学生管理的路由
+app.use('/studentManager', studentManagerRouter);
 
 // 监听服务器
 app.listen(3000, '127.0.0.1', err => {

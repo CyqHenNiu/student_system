@@ -3,7 +3,7 @@ const express = require('express');
 const path = require('path');
 
 // 创建路由
-var accountRouter = express.Router();
+const accountRouter = express.Router();
 
 // 处理请求
 // 引入控制器
