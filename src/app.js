@@ -30,6 +30,22 @@ app.use(session({
     }
 }))
 
+// 拦截请求  判断用户是否登录
+app.all('/*', (req, res, next) => {
+    // 如果请求包含account则可以访问
+    if (req.url.includes('account')) {
+        next();
+    } else {
+        // 判断是否登录
+        if (req.session.loginedname) {
+            next();
+            return;
+        }
+        res.send('<script>alert("您还没有登录,请先登录");window.location.href="/account/login"</script>')
+
+    }
+})
+
 // 集成路由中间件
 // 引入路由
 const accountRouter = require(path.join(__dirname, 'routes/accountRouter.js'));

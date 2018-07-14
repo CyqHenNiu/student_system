@@ -40,9 +40,9 @@
                     <td>{{ this.phone }}</td>
                     <td>
 
-                        <a href="#" class="btn btn-success">编辑</a> |
+                        <a href="/studentManager/edit/{{this._id}}" class="btn btn-success">编辑</a> |
 
-                        <input type="button" class="btn btn-danger" value="删除">
+                        <input type="button" class="btn btn-danger" value="删除" onclick="window.location.href='/studentManager/deleteStudent/{{this._id}}'">
                     </td>
                 </tr>
                 {{/each}}

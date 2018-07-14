@@ -107,6 +107,8 @@ exports.login = (req, res) => {
             result.status = 2;
             result.message = '账号或密码错误';
         }
+        // 登录成功 设置session
+        req.session.loginedname = userName;
         // 返回结果
         res.json(result);
     })
