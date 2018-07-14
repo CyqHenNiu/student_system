@@ -1,43 +1,51 @@
 // 引入xtpl
 const xtpl = require('xtpl');
 const path = require('path');
-// 引入Mongodb数据库连接方法
-const MongoClient = require('mongodb').MongoClient;
-// 连接数据库服务地址
-const url = 'mongodb://localhost:27017';
-// 数据库名称
-const dbName = 'szhmqd18';
-
+// 引入数据库工具方法
+const databaseTool = require(path.join(__dirname, '../tools/databaseTool'));
 
 // 暴露获取学生列表的方法
 exports.getListPage = (req, res) => {
     // 接收数据 没有数据就为空字符
     const keyword = req.query.keyword || '';
-    // 连接数据库
-    MongoClient.connect(url, {
-        useNewUrlParser: true
-    }, function (err, client) {
-        const db = client.db(dbName);
-        // 需要查询的文档
-        const collection = db.collection('studentInfo');
-        // 查询学生列表信息  模糊查询
-        collection.find({
-            name: {
-                $regex: keyword
-            }
-        }).toArray(function (err, docs) {
-            // 关闭数据库连接
-            client.close();
-            // 引入模板引擎
-            xtpl.renderFile(path.join(__dirname, '../views/list.html'), {
-                studentList: docs,
-                // 将查询的关键字也传给浏览器
-                keyword
-            }, (err, content) => {
-                // 返回结果
-                res.send(content);
-            })
+
+    // 调用查询数据的方法
+    databaseTool.find('studentInfo', {
+        name: {
+            $regex: keyword
+        }
+    }, (err, docs) => {
+        // 引入模板引擎
+        xtpl.renderFile(path.join(__dirname, '../views/list.html'), {
+            studentList: docs,
+            // 将查询的关键字也传给浏览器
+            keyword
+        }, (err, content) => {
+            // 返回结果
+            res.send(content);
         })
     })
+}
 
+// 暴露添加学生列表页面的方法
+exports.getAddPage = (req, res) => {
+    // 调用模板引擎
+    xtpl.renderFile(path.join(__dirname, '../views/add.html'), {}, (err, content) => {
+        // 返回结果给浏览器
+        res.send(content);
+    })
+}
+
+// 暴露添加学生信息的方法
+exports.addInfo = (req, res) => {
+    // 调用插入一条数据的方法
+    databaseTool.insertOne('studentInfo', req.body, (err, docs) => {
+        if (docs != null) {
+            // 添加成功 返回学生列表页面
+            res.end('<script>window.location.href = "/studentmanager/list"</script>')
+        } else {
+            // 添加失败弹出窗口
+            res.end('<script>alert("新增学生信息失败")</script>')
+        }
+    })
 }

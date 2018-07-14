@@ -32,12 +32,12 @@ app.use(session({
 
 // 集成路由中间件
 // 引入路由
-const accountRouter = require(path.join(__dirname, 'routers/accountRouter.js'));
+const accountRouter = require(path.join(__dirname, 'routes/accountRouter.js'));
 // 如果请求是以account 交给它的路由处理
 app.use('/account', accountRouter);
 
 // 引入学生管理路由
-const studentManagerRouter = require(path.join(__dirname, 'routers/studentManagerRouter.js'));
+const studentManagerRouter = require(path.join(__dirname, 'routes/studentManagerRouter.js'));
 // 处理学生管理的路由
 app.use('/studentManager', studentManagerRouter);
 
